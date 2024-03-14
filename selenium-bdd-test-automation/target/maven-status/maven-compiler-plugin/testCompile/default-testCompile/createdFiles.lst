@@ -1,0 +1,4 @@
+selenium\stepDefinations\StepDefinations.class
+selenium\helper\FileReaderManager.class
+selenium\helper\ConfigFileReader.class
+selenium\TestRunner.class
