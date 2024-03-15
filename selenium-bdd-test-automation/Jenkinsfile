@@ -1,0 +1,40 @@
+pipeline {
+    agent { label 'local' }
+
+    environment {
+        MAVEN_HOME = 'C:\\Program Files\\apache-maven-3.8.6'
+    }
+
+    triggers {
+        cron('0 3 * * *') // Trigger the build daily at 3:00 AM
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'your_credentials_id', url: 'https://github.com/rajeshbandiqa/stash-selenium-code.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                bat "\"${MAVEN_HOME}\\bin\\mvn\" clean test"
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext subject: 'Selenium Tests Passed',
+                      body: 'The Selenium tests have passed successfully. The target folder is attached.',
+                      to: 'your_email@example.com',
+                      attachmentsPattern: '**/target/*'
+        }
+
+        failure {
+            emailext subject: 'Selenium Tests Failed',
+                      body: 'The Selenium tests have failed.',
+                      to: 'your_email@example.com'
+        }
+    }
+}
